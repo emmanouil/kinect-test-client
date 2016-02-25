@@ -1,0 +1,10 @@
+##for now we ignore everything besides base source code files
+*
+!.gitignore
+!index.html
+!script.js
+
+#client-side
+!web-client/
+!web-client/index.html
+!web-client/script.js
