@@ -12,6 +12,7 @@ var Skeleton = function() {
 	this.Aproj = 0;
 	this.coordsDist = [];
 	this.coordsProj = [];
+	this.inSync = false;
 };
 
 Skeleton.prototype.push = function(skel_in, isProjected, A) {
@@ -19,12 +20,12 @@ Skeleton.prototype.push = function(skel_in, isProjected, A) {
 	if(isProjected == true){
 		this.Aproj = A;
 		skel_in.forEach(function(item, index, array){
-			this.coordsProj[index] = item.split(',');		
+			skeleton.coordsProj[index] = item.split(',');		
 		});
 	}else{
 		this.Adist = A;
 		skel_in.forEach(function(item, index, array){
-			this.coordsDist[index] = item.split(',');		
+			skeleton.coordsDist[index] = item.split(',');		
 		});
 	}
   
@@ -66,10 +67,18 @@ function parse_skeleton(skel_set){
 
 	var curr_skel = skel_set.split(' ');
 	var curr_time = curr_skel.shift().split(':')[1];
-	var curr_A = curr_skel.shift().split(':')[1];
+	var curr_A = curr_skel.shift().split(':')[1].split(',');
 
+	if(skeleton.timestamp == curr_time){
+		skeleton.push(curr_skel, true, curr_A);
+		skeleton.inSync = true;
+	}else{
+		skeleton.push(curr_skel, false, curr_A);
+		skeleton.time(curr_time);
+		skeleton.inSync = false;
+	}
 
-	console.log('woobly');
+	console.log(skeleton);
 	delete_this = skel_set;	
 }
 
