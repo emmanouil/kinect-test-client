@@ -4,6 +4,7 @@
 !index.html
 !script.js
 !skel_parser.js
+!audio_engine.js
 
 #client-side
 !web-client/
