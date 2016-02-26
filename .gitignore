@@ -3,6 +3,7 @@
 !.gitignore
 !index.html
 !script.js
+!skel_parser.js
 
 #client-side
 !web-client/
