@@ -5,6 +5,8 @@
 !script.js
 !skel_parser.js
 !audio_engine.js
+!visuals.js
+!sample.vtt
 
 #client-side
 !web-client/

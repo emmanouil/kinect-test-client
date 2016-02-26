@@ -76,6 +76,7 @@ function appendHandler(){
 		if(playlist[1]==null || playlist[1].length<2){
 			console.log('play');
 			mediaSource.endOfStream();
+			canvasInit();
 			video.play();
       		return;
 		}else{

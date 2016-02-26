@@ -8,10 +8,16 @@
 <body>
 	<h3>Test Header</h3>
 	<p> audio sample app </p>
-	<video id="v" controls width="640" height="480"> </video>
+	<video id="v" controls width="640" height="480">
+		<track kind="metadata" src="sample.vtt" label="Cues from Skeleton">
+	</video>
+    <canvas class="canvas">
+      Your browser does not support HTML5 canvas
+    </canvas>	
 	<script src="audio_engine.js"></script>
 	<script src="skel_parser.js"></script>
 	<script src="script.js"></script>
+	<script src="visuals.js"></script>
 </body>
 
 </html>
