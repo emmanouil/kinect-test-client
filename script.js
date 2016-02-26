@@ -10,7 +10,7 @@
  */
 
 
-var playlist_dir = '/x64/Debug/out/playlist.m3u8';
+var playlist_dir = '/out/playlist.m3u8';
 var mime_codec = 'video/mp4; codecs="avc1.42c01e"';
 var mediaSource = new MediaSource();
 var video;
@@ -55,10 +55,6 @@ function onSourceOpen(){
 }
 
 function firstSegment(){
-    //var mediaSource = e.target;
-
-    //video.addEventListener('seeking', onSeeking.bind(video, mediaSource));
-    //video.addEventListener('progress', onProgress.bind(video, mediaSource));
 
 	var initSegment = this.response;
 
@@ -123,29 +119,6 @@ function appendNextMediaSegment(frag_resp) {
     mediaSource.sourceBuffers[0].appendBuffer(mediaSegment);
 }
 
-/*
-function onSeeking(mediaSource, e) {
-    var video = e.target;
-
-    if (mediaSource.readyState == "open") {
-      // Abort current segment append.
-      mediaSource.sourceBuffers[0].abort();
-    }
-
-    // Notify the media segment loading code to start fetching data at the
-    // new playback position.
-    SeekToMediaSegmentAt(video.currentTime);
-
-    // Append a media segment from the new playback position.
-    appendNextMediaSegment(mediaSource);
-}
-
-
-function onProgress(mediaSource, e) {
-    appendNextMediaSegment(mediaSource);
-}
-*/
-
 //Content-loading functions
 function fetch(what, where, resp_type){
 	console.log("fetching "+what);
@@ -172,5 +145,6 @@ function parse_playlist(){
 
 function handleCoordSet(coors){
 	console.log(coors);
+	parse_skeleton(coors);
 	appendHandler();
 }
