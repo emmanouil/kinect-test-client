@@ -41,12 +41,12 @@ var proj_skel;
 var delete_this;
 
 var Skeleton = function() {
-	this.timestamp = 0;
-	this.Adist = 0;
-	this.Aproj = 0;
-	this.coordsDist = [];
-	this.coordsProj = [];
-	this.inSync = false;
+	this.timestamp = 0;		//we also use it as ID
+	this.Adist = 0;			//Centre Coord
+	this.Aproj = 0;			//Projected Centre Coord
+	this.coordsDist = [];	//Joint Coords
+	this.coordsProj = [];	//Projected Joint Coords
+	this.inSync = false;	//The Projected Coords are in sync
 };
 
 //Push coords to Skeleton object
@@ -68,13 +68,11 @@ Skeleton.prototype.push = function(skel_in, isProjected, A) {
   
 };
 
-Skeleton.prototype.time = function(time_in){
-	this.timestamp = time_in;
-}
-
 
 //Current Skeleton
 var skeleton = new Skeleton();
+//unused Skeletons array
+var skeletons = [];
 
 
 function parse_skeleton(skel_set){
@@ -86,12 +84,26 @@ function parse_skeleton(skel_set){
 	if(skeleton.timestamp == curr_time){
 		skeleton.push(curr_skel, true, curr_A);
 		skeleton.inSync = true;
+		console.log('Adding Qeue...');
 	}else{
 		skeleton.push(curr_skel, false, curr_A);
-		skeleton.time(curr_time);
+		skeleton.timestamp = curr_time;
 		skeleton.inSync = false;
 	}
-
+	
 	console.log(skeleton);
+	
+	if(skeleton.inSync){
+		console.log('Qeued');
+		skeleton_to_cue();
+		skeletons.push(Object.assign({}, skeleton));
+	}
+	
 	delete_this = skel_set;	
+}
+
+function skeleton_to_cue(){
+	//textTrack.addCue(new TextTrackCue(skeleton.timestamp, skeleton.timestamp+10,skeleton.timestamp));
+	tms = parseInt(skeleton.timestamp);
+	textTrack.addCue(new VTTCue(tms, tms+10, skeleton.timestamp));
 }
