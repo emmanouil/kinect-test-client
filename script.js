@@ -13,8 +13,8 @@
 var playlist_dir = '/out/playlist.m3u8';
 var mime_codec = 'video/mp4; codecs="avc1.42c01e"';
 var mediaSource = new MediaSource();
-var video;
-var playlist;
+var video, playlist, textTrack, cues;
+
 
 var req_status = -10;
 var segBuffer = 10;
@@ -22,6 +22,8 @@ var segBuffer = 10;
 //after window loads do the init
 window.onload = function(){
 	video = document.getElementById('v');
+	textTrack = video.textTracks[0];
+	cues = textTrack.cues;
 	mediaSource.video = video;
 	video.ms = mediaSource;
 	fetch_pl();
