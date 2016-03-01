@@ -104,6 +104,7 @@ function parse_skeleton(skel_set){
 
 function skeleton_to_cue(){
 	//textTrack.addCue(new TextTrackCue(skeleton.timestamp, skeleton.timestamp+10,skeleton.timestamp));
-	tms = parseInt(skeleton.timestamp);
-	textTrack.addCue(new VTTCue(tms, tms+10, skeleton.timestamp));
+	tms = parseInt(skeleton.timestamp)/1000;	//cues are in sec
+	textTrack.addCue(new VTTCue(tms, tms+0.010, skeleton.timestamp));
 }
+

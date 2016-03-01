@@ -22,15 +22,23 @@ var segBuffer = 10;
 //after window loads do the init
 window.onload = function(){
 	video = document.getElementById('v');
-	textTrack = video.textTracks[0];
-	cues = textTrack.cues;
 	mediaSource.video = video;
 	video.ms = mediaSource;
 	fetch_pl();
 	video.src = window.URL.createObjectURL(mediaSource);
 	initMSE();
+	initCues();
 }
 
+//TextTrack-specific initialization
+function initCues(){
+	textTrack = video.textTracks[0];
+	cues = textTrack.cues;
+	textTrack.oncuechange = function(){
+		console.log(video.currentTime);
+		do_the_sound(parseInt(textTrack.activeCues[0].text));
+	}
+}
 
 //MSE-specific functions
 function initMSE(){
