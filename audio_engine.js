@@ -32,10 +32,8 @@ var is_playing = false;
 //Entry point 
 function do_the_audio(e){
 
-	var skel = e.data;
+	var skel = e;
 	
-	//skel.coordsDist[11].
-
 	/*	
 		this.timestamp = 0;		//we also use it as ID
 	this.Adist = 0;			//Centre Coord
@@ -45,9 +43,12 @@ function do_the_audio(e){
 	this.inSync = false;	//The Projected Coords are in sync
 */	
 	
-	if(is_playing) return;
+	if(!is_playing){
+		oscillator.start(0);
+		is_playing = true;
+	}
 	
-	oscillator.start(0);
+	oscillator.frequency.value = map(skel.coordsDist[11][1], skel.coordsDist[0][1], skel.coordsDist[3][1], 0, maxFreq);
 
 /*
 	var type = e.data.type;
