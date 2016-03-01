@@ -35,11 +35,9 @@ T:4542 A:161,109,18592 0:161,85,19224 1:162,77,19592 2:163,32,19472 3:159,4,1856
 var last_timestamp = 0;	//global variable holding last skeleton set timestamp
 var last_A_dist;	//global variable holding last skeleton set center coords
 var last_A_proj;	//global variable holding last skeleton set screen projection center coords
+var intervalID, startTime;
 
-var curr_skel;
-var proj_skel;
-var delete_this;
-
+//Skeleton object
 var Skeleton = function() {
 	this.timestamp = 0;		//we also use it as ID
 	this.Adist = 0;			//Centre Coord
@@ -74,6 +72,28 @@ var skeleton = new Skeleton();
 //unused Skeletons array
 var skeletons = [];
 
+//Entry point - since this is a worker
+onmessage = function(e){
+	var type = e.data.type;
+	var data = e.data.data;
+
+	if(type=='coords'){
+		parse_skeleton(data);
+	}else if(type=='start'){
+		intervalID = setInterval(check_qeue, 10);
+		startTime = performance.now();
+	}
+}
+
+function check_qeue(){
+
+	var time = startTime-performance.now();
+	if(time<skeletons[0].timestamp || skeletons.length==0)	return;
+	
+	if(time>=skeletons[0].timestamp && time<skeletons[1].timestamp){
+		pop_a_joint();
+	}
+}
 
 function parse_skeleton(skel_set){
 
@@ -84,7 +104,6 @@ function parse_skeleton(skel_set){
 	if(skeleton.timestamp == curr_time){
 		skeleton.push(curr_skel, true, curr_A);
 		skeleton.inSync = true;
-		console.log('Adding Qeue...');
 	}else{
 		skeleton.push(curr_skel, false, curr_A);
 		skeleton.timestamp = curr_time;
@@ -94,12 +113,9 @@ function parse_skeleton(skel_set){
 	console.log(skeleton);
 	
 	if(skeleton.inSync){
-		console.log('Qeued');
 		//skeleton_to_cue();
 		skeletons.push(Object.assign({}, skeleton));
 	}
-	
-	delete_this = skel_set;	
 }
 
 function skeleton_to_cue(){
@@ -108,3 +124,7 @@ function skeleton_to_cue(){
 	textTrack.addCue(new VTTCue(tms, tms+0.010, skeleton.timestamp));
 }
 
+function pop_a_joint(){
+	console.log(skeletons[skeletons.length-1]);
+	postMessage(skeletons.shift());
+}

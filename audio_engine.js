@@ -1,5 +1,5 @@
 // create web audio api context
-var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+var audioCtx = new (AudioContext || window.webkitAudioContext)();
 
 // create Oscillator and gain node
 var oscillator = audioCtx.createOscillator();
@@ -26,5 +26,38 @@ oscillator.frequency.value = initialFreq; // value in hertz
 oscillator.detune.value = 100; // value in cents
 //oscillator.start(0);		//we do not want it to start with no data
 
+//custom
+var is_playing = false;
 
-//function start
+//Entry point 
+function do_the_audio(e){
+
+	var skel = e.data;
+	
+	//skel.coordsDist[11].
+
+	/*	
+		this.timestamp = 0;		//we also use it as ID
+	this.Adist = 0;			//Centre Coord
+	this.Aproj = 0;			//Projected Centre Coord
+	this.coordsDist = [];	//Joint Coords
+	this.coordsProj = [];	//Projected Joint Coords
+	this.inSync = false;	//The Projected Coords are in sync
+*/	
+	
+	if(is_playing) return;
+	
+	oscillator.start(0);
+
+/*
+	var type = e.data.type;
+	var data = e.data.data;
+
+	if(type=='coords'){
+		parse_skeleton(data);
+	}else if(type=='start'){
+		intervalID = setInterval(check_qeue, 10);
+		startTime = performance.now();
+	}
+	*/
+}

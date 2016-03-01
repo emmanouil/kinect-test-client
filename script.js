@@ -14,6 +14,8 @@ var playlist_dir = '/out/playlist.m3u8';
 var mime_codec = 'video/mp4; codecs="avc1.42c01e"';
 var mediaSource = new MediaSource();
 var video, playlist, textTrack, cues;
+var skeleton_worker = new Worker('skel_parser.js');
+var audio_worker = new Worker('audio_engine.js');
 
 
 var req_status = -10;
@@ -86,10 +88,8 @@ function appendHandler(){
 
       // Append some initial media data.
 		if(playlist[1]==null || playlist[1].length<2){
-			console.log('play');
 			mediaSource.endOfStream();
-			canvasInit();
-			video.play();
+			start_video();
       		return;
 		}else{
 			element = playlist.splice(1, 1).toString();
@@ -158,6 +158,19 @@ function parse_playlist(){
 
 function handleCoordSet(coors){
 	console.log(coors);
-	parse_skeleton(coors);
+	skeleton_worker.postMessage({type:'coords', data:coors})
+	//parse_skeleton(coors);
 	appendHandler();
+}
+
+function start_video(){
+	console.log('play');
+	canvasInit();
+	skeleton_worker.postMessage({type:'start', data:video.currentTime})
+	video.play();
+}
+
+//incoming msg from skeleton worker
+skeleton_worker.onmessage = function(e){
+	console.log(e);
 }
