@@ -86,9 +86,16 @@ onmessage = function(e){
 }
 
 function check_qeue(){
-
-	var time = startTime-performance.now();
-	if(time<skeletons[0].timestamp || skeletons.length==0)	return;
+	
+	var time = performance.now()-startTime;
+	
+	if((typeof skeletons[0] === 'undefined')||(skeletons.length == 1)){
+		console.log('stopin');
+		clearInterval(intervalID);
+		return;	
+	}
+	
+	if(time<skeletons[0].timestamp)	return;
 	
 	if(time>=skeletons[0].timestamp && time<skeletons[1].timestamp){
 		pop_a_joint();
@@ -125,6 +132,7 @@ function skeleton_to_cue(){
 }
 
 function pop_a_joint(){
-	console.log(skeletons[skeletons.length-1]);
+	console.log('popin');
+	console.log(skeletons.length);
 	postMessage(skeletons.shift());
 }
