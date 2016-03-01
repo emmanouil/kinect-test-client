@@ -27,9 +27,10 @@ window.onload = function(){
 	fetch_pl();
 	video.src = window.URL.createObjectURL(mediaSource);
 	initMSE();
-	initCues();
+	//initCues();
 }
 
+/*
 //TextTrack-specific initialization
 function initCues(){
 	textTrack = video.textTracks[0];
@@ -39,6 +40,7 @@ function initCues(){
 		do_the_sound(parseInt(textTrack.activeCues[0].text));
 	}
 }
+*/
 
 //MSE-specific functions
 function initMSE(){

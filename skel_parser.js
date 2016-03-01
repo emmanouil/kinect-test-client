@@ -95,7 +95,7 @@ function parse_skeleton(skel_set){
 	
 	if(skeleton.inSync){
 		console.log('Qeued');
-		skeleton_to_cue();
+		//skeleton_to_cue();
 		skeletons.push(Object.assign({}, skeleton));
 	}
 	
