@@ -18,12 +18,13 @@ var maxFreq = 6000;
 var maxVol = 0.02;
 
 var initialFreq = 3000;
-var initialVol = 0.001;
+var initialVol = 0.002;
 
 // set options for the oscillator
 oscillator.type = 'square';		//also supports sine, sawtooth, triangle and custom
 oscillator.frequency.value = initialFreq; // value in hertz
 oscillator.detune.value = 100; // value in cents
+gainNode.gain.value = initialVol;
 //oscillator.start(0);		//we do not want it to start with no data
 
 //custom
