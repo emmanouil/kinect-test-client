@@ -11,7 +11,7 @@
 	<video id="v" controls width="640" height="480">
 		<track kind="metadata" src="sample.vtt" label="Cues from Skeleton" default>
 	</video>
-    <canvas class="canvas">
+    <canvas class="canvas" id="c">
       Your browser does not support HTML5 canvas
     </canvas>	
 	<!-- moved to worker -->
@@ -21,5 +21,26 @@
 	<script src="audio_engine.js"></script>
 	<script src="tools.js"></script>
 </body>
+
+<style>
+
+body {
+    background: black;
+}
+
+#c {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -180px 0 0 -240px;
+}
+
+#v {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -180px 0 0 -240px;
+}
+</style>
 
 </html>

@@ -171,5 +171,7 @@ function start_video(){
 
 //incoming msg from skeleton worker
 skeleton_worker.onmessage = function(e){
-	console.log(e);
+	console.log(e.data);
+	drawViz(e.data);
+	do_the_audio(e.data);
 }
