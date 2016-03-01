@@ -7,6 +7,7 @@
 !audio_engine.js
 !visuals.js
 !sample.vtt
+!tools.js
 
 #client-side
 !web-client/
