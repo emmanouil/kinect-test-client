@@ -55,12 +55,12 @@ Skeleton.prototype.push = function(skel_in, isProjected, A) {
 	if(isProjected == true){
 		this.Aproj = A;
 		skel_in.forEach(function(item, index, array){
-			skeleton.coordsProj[index] = item.split(',');		
+			skeleton.coordsProj[index] = item.split(':')[1].split(',');
 		});
 	}else{
 		this.Adist = A;
 		skel_in.forEach(function(item, index, array){
-			skeleton.coordsDist[index] = item.split(',');		
+			skeleton.coordsDist[index] = item.split(':')[1].split(',');
 		});
 	}
   
@@ -122,6 +122,10 @@ function parse_skeleton(skel_set){
 	if(skeleton.inSync){
 		//skeleton_to_cue();
 		skeletons.push(Object.assign({}, skeleton));
+		skeletons[skeletons.length-1].coordsDist = skeleton.coordsDist.slice();
+		skeletons[skeletons.length-1].coordsProj = skeleton.coordsProj.slice();
+//		skeletons[skeletons.length-1].AProj = skeleton.AProj.slice();
+//		skeletons[skeletons.length-1].ADist = skeleton.ADist.slice();
 	}
 }
 
