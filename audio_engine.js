@@ -5,9 +5,7 @@ var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 var oscillator = audioCtx.createOscillator();
 var gainNode = audioCtx.createGain();
 
-// connect oscillator to gain node to speakers
-oscillator.connect(gainNode);
-gainNode.connect(audioCtx.destination);
+
 
 // create initial theremin frequency and volumn values
 
@@ -30,7 +28,18 @@ gainNode.gain.value = initialVol;
 //custom
 var is_playing = false;
 
-//Entry point 
+//panning
+var panNode = audioCtx.createStereoPanner();
+
+
+// connect oscillator to gain node to speakers
+oscillator.connect(panNode);
+panNode.connect(gainNode);
+gainNode.connect(audioCtx.destination);
+
+
+//Entry point
+//TODO FIX FREQ BUG
 function do_the_audio(e){
 
 	var skel = e;
@@ -50,6 +59,8 @@ function do_the_audio(e){
 	}
 	
 	oscillator.frequency.value = map(skel.coordsDist[11][1], skel.coordsDist[0][1], skel.coordsDist[3][1], 0, maxFreq);
+	
+	panNode.pan.value = map(skel.Aproj[0], 0, 320, -1, 1);
 
 /*
 	var type = e.data.type;
