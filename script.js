@@ -16,6 +16,7 @@ var mediaSource = new MediaSource();
 var video, playlist, textTrack, cues;
 var skeleton_worker = new Worker('skel_parser.js');
 var withReverb = false;
+var withDistortion = false;
 var reverbFile = 'concert-crowd2.ogg';
 
 var req_status = -10;

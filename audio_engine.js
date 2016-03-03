@@ -5,10 +5,11 @@ var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 var oscillator = audioCtx.createOscillator();
 var oscillator2 = audioCtx.createOscillator();	//not used for now
 var gainNode = audioCtx.createGain();
-
 var reverb = audioCtx.createConvolver();
-var reverbBuffer, soundSource;
+var distortion = audioCtx.createWaveShaper();
 
+var reverbBuffer, soundSource;
+var distV = 50;
 
 // create initial theremin frequency and volumn values
 
@@ -19,7 +20,7 @@ var maxFreq = 6000;
 var maxVol = 0.02;
 
 var initialFreq = 3000;
-var initialVol = 0.002;
+var initialVol = 0.003;
 
 // set options for the oscillator
 oscillator.type = 'sine';		//also supports sine, sawtooth, triangle and custom
@@ -68,11 +69,17 @@ function do_the_audio(e){
 */	
 	
 	if(!is_playing){
-		if(!withReverb){
-			gainNode.connect(audioCtx.destination);
-		}else{
+		if(withReverb){
 			gainNode.gain.value = initialVol*2;
+		}else if(withDistortion){
+			gainNode.connect(distortion);
+			distortion.connect(audioCtx.destination);
+			makeDistortionCurve(distV);		
+		}else{
+			gainNode.connect(audioCtx.destination);		
 		}
+		
+		
 		initAudioEnv(skel);
 		oscillator.start(0);
 		//oscillator2.start(0);
@@ -105,6 +112,22 @@ function initReverb(resp){
     }, function(e){"Error with decoding audio data" + e.err});
 
 }
+
+function makeDistortionCurve(amount) {
+    var k = typeof amount === 'number' ? amount : 50,
+        n_samples = 44100,
+        curve = new Float32Array(n_samples),
+        deg = Math.PI / 180,
+        i = 0,
+        x;
+    for ( ; i < n_samples; ++i ) {
+        x = i * 2 / n_samples - 1;
+        curve[i] = ( 3 + k ) * x * 20 * deg / 
+            (Math.PI + k * Math.abs(x));
+    }
+    return curve;
+}
+
 
 function kill_audio(){
 	oscillator.stop();
