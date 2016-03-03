@@ -3,9 +3,11 @@ var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
 // create Oscillator and gain node
 var oscillator = audioCtx.createOscillator();
-var oscillator2 = audioCtx.createOscillator();
+var oscillator2 = audioCtx.createOscillator();	//not used for now
 var gainNode = audioCtx.createGain();
 
+var reverb = audioCtx.createConvolver();
+var reverbBuffer, soundSource;
 
 
 // create initial theremin frequency and volumn values
@@ -48,8 +50,6 @@ panNode.connect(gainNode);
 oscillator2.connect(panNode2);
 panNode2.connect(gainNode);
 
-gainNode.connect(audioCtx.destination);
-
 
 var yMin, yMax; //yMax = headY , yMin = kneeY + |headY - kneeY|/9
 
@@ -68,6 +68,11 @@ function do_the_audio(e){
 */	
 	
 	if(!is_playing){
+		if(!withReverb){
+			gainNode.connect(audioCtx.destination);
+		}else{
+			gainNode.gain.value = initialVol*2;
+		}
 		initAudioEnv(skel);
 		oscillator.start(0);
 		//oscillator2.start(0);
@@ -86,6 +91,19 @@ function initAudioEnv(skel){
 	yMax = parseFloat(skel.coordsDist[3][1]);
 	var kneeAvg = (parseFloat(skel.coordsDist[13][1]) + parseFloat(skel.coordsDist[17][1]))/2;
 	yMin = kneeAvg + (parseFloat(skel.coordsDist[3][1]) - kneeAvg)/9;
+}
+
+function initReverb(resp){
+	var audioData = resp.target.response;
+	audioCtx.decodeAudioData(audioData, function(buffer) {
+      reverbBuffer = buffer;
+      soundSource = audioCtx.createBufferSource();
+      soundSource.buffer = reverbBuffer;
+	reverb.buffer = reverbBuffer;
+	gainNode.connect(reverb);
+	reverb.connect(audioCtx.destination);
+    }, function(e){"Error with decoding audio data" + e.err});
+
 }
 
 function kill_audio(){

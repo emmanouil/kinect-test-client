@@ -15,7 +15,8 @@ var mime_codec = 'video/mp4; codecs="avc1.42c01e"';
 var mediaSource = new MediaSource();
 var video, playlist, textTrack, cues;
 var skeleton_worker = new Worker('skel_parser.js');
-
+var withReverb = false;
+var reverbFile = 'concert-crowd2.ogg';
 
 var req_status = -10;
 var segBuffer = 10;
@@ -28,6 +29,7 @@ window.onload = function(){
 	fetch_pl();
 	video.src = window.URL.createObjectURL(mediaSource);
 	initMSE();
+	if(withReverb) fetch(reverbFile,initReverb,"arraybuffer");
 	//initCues();
 }
 
