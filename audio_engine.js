@@ -3,6 +3,7 @@ var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
 // create Oscillator and gain node
 var oscillator = audioCtx.createOscillator();
+var oscillator2 = audioCtx.createOscillator();
 var gainNode = audioCtx.createGain();
 
 
@@ -19,22 +20,34 @@ var initialFreq = 3000;
 var initialVol = 0.002;
 
 // set options for the oscillator
-oscillator.type = 'square';		//also supports sine, sawtooth, triangle and custom
+oscillator.type = 'sine';		//also supports sine, sawtooth, triangle and custom
 oscillator.frequency.value = initialFreq; // value in hertz
-oscillator.detune.value = 100; // value in cents
+oscillator.detune.value = 0; // value in cents
 gainNode.gain.value = initialVol;
 //oscillator.start(0);		//we do not want it to start with no data
+
+oscillator2.type = 'square';		//also supports sine, sawtooth, triangle and custom
+oscillator2.frequency.value = initialFreq; // value in hertz
+oscillator2.detune.value = 5; // value in cents
+oscillator.detune.value = -5; // value in cents
+
+
 
 //custom
 var is_playing = false;
 
 //panning
 var panNode = audioCtx.createStereoPanner();
+var panNode2 = audioCtx.createStereoPanner();
 
 
 // connect oscillator to gain node to speakers
 oscillator.connect(panNode);
 panNode.connect(gainNode);
+
+oscillator2.connect(panNode2);
+panNode2.connect(gainNode);
+
 gainNode.connect(audioCtx.destination);
 
 
@@ -57,12 +70,15 @@ function do_the_audio(e){
 	if(!is_playing){
 		initAudioEnv(skel);
 		oscillator.start(0);
+		//oscillator2.start(0);
 		is_playing = true;
 	}
 	
-	oscillator.frequency.value = map(skel.coordsDist[11][1], yMin, yMax, 0, maxFreq);
+	oscillator.frequency.value = oscillator.frequency.value = map(skel.coordsDist[11][1], yMin, yMax, 0, maxFreq);
+	//oscillator2.frequency.value = oscillator.frequency.value = map(skel.coordsDist[11][1], yMin, yMax, 0, maxFreq);
 	
-	panNode.pan.value = map(skel.Aproj[0], 0, 320, -1, 1);
+	panNode.pan.value = map(parseInt(skel.Aproj[0]), 0, 480, -1, 1);
+	//panNode2.pan.value = map(parseInt(skel.Aproj[0]), 0, 480, 1, -1);
 
 }
 
@@ -74,4 +90,5 @@ function initAudioEnv(skel){
 
 function kill_audio(){
 	oscillator.stop();
+	//oscillator2.stop();
 }
