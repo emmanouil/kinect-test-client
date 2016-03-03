@@ -171,7 +171,19 @@ function start_video(){
 
 //incoming msg from skeleton worker
 skeleton_worker.onmessage = function(e){
-	console.log(e.data);
-	drawViz(e.data);
-	do_the_audio(e.data);
+	var type = e.data.type;
+	var data = e.data.data;
+
+	if(typeof type === 'undefined'){	//we have a skeleton set
+		drawViz(e.data);
+		do_the_audio(e.data);
+	}else{
+		switch(type){
+			case 'stop':
+				kill_audio();
+				break;
+			default:
+				console.log("NOTE: unwanted");		
+		}
+	}
 }

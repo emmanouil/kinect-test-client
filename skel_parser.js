@@ -91,6 +91,7 @@ function check_qeue(){
 	
 	if((typeof skeletons[0] === 'undefined')||(skeletons.length == 1)){
 		console.log('stopin');
+		send_message('now', 'stop');
 		clearInterval(intervalID);
 		return;	
 	}
@@ -98,7 +99,7 @@ function check_qeue(){
 	if(time<skeletons[0].timestamp)	return;
 	
 	if(time>=skeletons[0].timestamp && time<skeletons[1].timestamp){
-		pop_a_joint();
+		send_message(skeletons.shift());
 	}
 }
 
@@ -135,8 +136,11 @@ function skeleton_to_cue(){
 	textTrack.addCue(new VTTCue(tms, tms+0.010, skeleton.timestamp));
 }
 
-function pop_a_joint(){
-	console.log('popin');
-	console.log(skeletons.length);
-	postMessage(skeletons.shift());
+function send_message(msg, _type){
+	if (typeof _type === 'undefined'){
+		postMessage(msg);
+	}else{
+		postMessage({type:_type, data:msg});
+	}
+
 }

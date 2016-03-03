@@ -71,3 +71,7 @@ function initAudioEnv(skel){
 	var kneeAvg = (parseFloat(skel.coordsDist[13][1]) + parseFloat(skel.coordsDist[17][1]))/2;
 	yMin = kneeAvg + (parseFloat(skel.coordsDist[3][1]) - kneeAvg)/9;
 }
+
+function kill_audio(){
+	oscillator.stop();
+}
