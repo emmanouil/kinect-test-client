@@ -20,7 +20,6 @@ function drawViz(e){
 	projC.forEach(function(item, index, array){
 		canvasCtx.beginPath();
 		canvasCtx.fillStyle = 'rgb(255,0,0)';
-		console.log(projC[index]);
 		canvasCtx.arc(2*parseInt(item[0]),2*parseInt(item[1]),5,(Math.PI/180)*0,(Math.PI/180)*360,false);
 		canvasCtx.fill();
 		canvasCtx.closePath();
