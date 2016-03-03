@@ -1,6 +1,6 @@
 var canvas = document.querySelector('.canvas');
 var canvasCtx;
-var yLineMax, yLineMin
+var yLineMax, yLineMin;
 
 function canvasInit(){
 	canvas.width = video.width;
@@ -12,7 +12,6 @@ function canvasInit(){
 function drawViz(e){
 	var projC = e.coordsProj;
 	canvasCtx.clearRect(0,0,canvas.width, canvas.height);
-	console.log('OOO');
 
 	if(!is_playing){	//we received the first skeleton coords
 		initVizEnv(projC);
