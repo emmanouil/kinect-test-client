@@ -38,8 +38,9 @@ panNode.connect(gainNode);
 gainNode.connect(audioCtx.destination);
 
 
+var yMin, yMax; //yMax = headY , yMin = kneeY + |headY - kneeY|/9
+
 //Entry point
-//TODO FIX FREQ BUG
 function do_the_audio(e){
 
 	var skel = e;
@@ -54,23 +55,19 @@ function do_the_audio(e){
 */	
 	
 	if(!is_playing){
+		initAudioEnv(skel);
 		oscillator.start(0);
 		is_playing = true;
 	}
 	
-	oscillator.frequency.value = map(skel.coordsDist[11][1], skel.coordsDist[0][1], skel.coordsDist[3][1], 0, maxFreq);
+	oscillator.frequency.value = map(skel.coordsDist[11][1], yMin, yMax, 0, maxFreq);
 	
 	panNode.pan.value = map(skel.Aproj[0], 0, 320, -1, 1);
 
-/*
-	var type = e.data.type;
-	var data = e.data.data;
+}
 
-	if(type=='coords'){
-		parse_skeleton(data);
-	}else if(type=='start'){
-		intervalID = setInterval(check_qeue, 10);
-		startTime = performance.now();
-	}
-	*/
+function initAudioEnv(skel){
+	yMax = parseFloat(skel.coordsDist[3][1]);
+	var kneeAvg = (parseFloat(skel.coordsDist[13][1]) + parseFloat(skel.coordsDist[17][1]))/2;
+	yMin = kneeAvg + (parseFloat(skel.coordsDist[3][1]) - kneeAvg)/9;
 }
