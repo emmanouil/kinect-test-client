@@ -7,6 +7,8 @@ var oscillator2 = audioCtx.createOscillator();	//not used for now
 var gainNode = audioCtx.createGain();
 var reverb = audioCtx.createConvolver();
 var distortion = audioCtx.createWaveShaper();
+var modulator = audioCtx.createOscillator();	//Modulator
+var modulatorGain = audioCtx.createGain();
 
 var reverbBuffer, soundSource;
 var distV = 50;
@@ -17,10 +19,10 @@ var WIDTH = window.innerWidth;
 var HEIGHT = window.innerHeight;
 
 var maxFreq = 6000;
-var maxVol = 0.02;
+var maxVol = 0.2;
 
 var initialFreq = 3000;
-var initialVol = 0.003;
+var initialVol = 0.05;
 
 // set options for the oscillator
 oscillator.type = 'sine';		//also supports sine, sawtooth, triangle and custom
@@ -33,6 +35,13 @@ oscillator2.type = 'square';		//also supports sine, sawtooth, triangle and custo
 oscillator2.frequency.value = initialFreq; // value in hertz
 oscillator2.detune.value = 5; // value in cents
 oscillator.detune.value = -5; // value in cents
+
+modulationDepth = 100;
+modulationFrequency = 10;
+modFreqMax = 50;
+modDepthMax = 200;
+modulator.frequency.value = 10;
+modulatorGain.gain.value = 100;
 
 
 
@@ -75,8 +84,14 @@ function do_the_audio(e){
 			gainNode.connect(distortion);
 			distortion.connect(audioCtx.destination);
 			makeDistortionCurve(distV);		
-		}else{
+		}else if(withModulation){
+			modulator.connect(modulatorGain);
+			modulatorGain.connect(oscillator.frequency);
+			oscillator.connect(gainNode);
 			gainNode.connect(audioCtx.destination);		
+			modulator.start(0);
+		}else{
+			gainNode.connect(audioCtx.destination);	
 		}
 		
 		
@@ -86,11 +101,15 @@ function do_the_audio(e){
 		is_playing = true;
 	}
 	
-	oscillator.frequency.value = oscillator.frequency.value = map(skel.coordsDist[11][1], yMin, yMax, 0, maxFreq);
+	oscillator.frequency.value = map(skel.coordsDist[11][1], yMin, yMax, 0, maxFreq);
 	//oscillator2.frequency.value = oscillator.frequency.value = map(skel.coordsDist[11][1], yMin, yMax, 0, maxFreq);
 	
 	panNode.pan.value = map(parseInt(skel.Aproj[0]), 0, 480, -1, 1);
 	//panNode2.pan.value = map(parseInt(skel.Aproj[0]), 0, 480, 1, -1);
+	
+	if(withModulation){
+		modulator.frequency.value = map(skel.coordsDist[7][1], yMin, yMax, 0, modFreqMax);
+	}
 
 }
 
