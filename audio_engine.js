@@ -88,10 +88,12 @@ function do_the_audio(e){
 			modulator.connect(modulatorGain);
 			modulatorGain.connect(oscillator.frequency);
 			oscillator.connect(gainNode);
-			gainNode.connect(audioCtx.destination);		
+			gainNode.connect(panNode);
+			panNode.connect(audioCtx.destination);
 			modulator.start(0);
 		}else{
-			gainNode.connect(audioCtx.destination);	
+			gainNode.connect(panNode);
+			panNode.connect(audioCtx.destination);
 		}
 		
 		
