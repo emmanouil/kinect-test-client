@@ -97,7 +97,7 @@ function do_the_audio(e){
 	
 	oscillator.frequency.value = map(skel.coordsDist[11][1], yMin, yMax, 0, maxFreq);
 	
-	panNode.pan.value = map(parseInt(skel.Aproj[0]), 0, 480, -1, 1);
+	panNode.pan.value = map(parseInt(skel.Aproj[0]), 0, 320, -1, 1);
 	
 	if(withModulation){
 		modulator.frequency.value = map(skel.coordsDist[7][1], yMin, yMax, 0, modFreqMax);
