@@ -3,7 +3,6 @@ var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
 // create Oscillator and gain node
 var oscillator = audioCtx.createOscillator();
-var oscillator2 = audioCtx.createOscillator();	//not used for now
 var gainNode = audioCtx.createGain();
 var reverb = audioCtx.createConvolver();
 var distortion = audioCtx.createWaveShaper();
@@ -31,9 +30,6 @@ oscillator.detune.value = 0; // value in cents
 gainNode.gain.value = initialVol;
 //oscillator.start(0);		//we do not want it to start with no data
 
-oscillator2.type = 'square';		//also supports sine, sawtooth, triangle and custom
-oscillator2.frequency.value = initialFreq; // value in hertz
-oscillator2.detune.value = 5; // value in cents
 oscillator.detune.value = -5; // value in cents
 
 modulationDepth = 100;
@@ -50,15 +46,11 @@ var is_playing = false;
 
 //panning
 var panNode = audioCtx.createStereoPanner();
-var panNode2 = audioCtx.createStereoPanner();
 
 
 // connect oscillator to gain node to speakers
 oscillator.connect(panNode);
 panNode.connect(gainNode);
-
-oscillator2.connect(panNode2);
-panNode2.connect(gainNode);
 
 
 var yMin, yMax; //yMax = headY , yMin = kneeY + |headY - kneeY|/9
@@ -104,10 +96,8 @@ function do_the_audio(e){
 	}
 	
 	oscillator.frequency.value = map(skel.coordsDist[11][1], yMin, yMax, 0, maxFreq);
-	//oscillator2.frequency.value = oscillator.frequency.value = map(skel.coordsDist[11][1], yMin, yMax, 0, maxFreq);
 	
 	panNode.pan.value = map(parseInt(skel.Aproj[0]), 0, 480, -1, 1);
-	//panNode2.pan.value = map(parseInt(skel.Aproj[0]), 0, 480, 1, -1);
 	
 	if(withModulation){
 		modulator.frequency.value = map(skel.coordsDist[7][1], yMin, yMax, 0, modFreqMax);
@@ -152,5 +142,4 @@ function makeDistortionCurve(amount) {
 
 function kill_audio(){
 	oscillator.stop();
-	//oscillator2.stop();
 }
