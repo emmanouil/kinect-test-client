@@ -1,12 +1,12 @@
 // create web audio api context
-var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+var audioCtx = new(window.AudioContext || window.webkitAudioContext)();
 
 // create Oscillator and gain node
 var oscillator = audioCtx.createOscillator();
 var gainNode = audioCtx.createGain();
 var reverb = audioCtx.createConvolver();
 var distortion = audioCtx.createWaveShaper();
-var modulator = audioCtx.createOscillator();	//Modulator
+var modulator = audioCtx.createOscillator(); //Modulator
 var modulatorGain = audioCtx.createGain();
 
 var reverbBuffer, soundSource;
@@ -24,7 +24,7 @@ var initialFreq = 3000;
 var initialVol = 0.05;
 
 // set options for the oscillator
-oscillator.type = 'sine';		//also supports sine, sawtooth, triangle and custom
+oscillator.type = 'sine'; //also supports sine, sawtooth, triangle and custom
 oscillator.frequency.value = initialFreq; // value in hertz
 oscillator.detune.value = 0; // value in cents
 gainNode.gain.value = initialVol;
@@ -56,10 +56,10 @@ panNode.connect(gainNode);
 var yMin, yMax; //yMax = headY , yMin = kneeY + |headY - kneeY|/9
 
 //Entry point
-function do_the_audio(e){
+function do_the_audio(e) {
 
 	var skel = e;
-	
+
 	/*	
 		this.timestamp = 0;		//we also use it as ID
 	this.Adist = 0;			//Centre Coord
@@ -67,79 +67,81 @@ function do_the_audio(e){
 	this.coordsDist = [];	//Joint Coords
 	this.coordsProj = [];	//Projected Joint Coords
 	this.inSync = false;	//The Projected Coords are in sync
-*/	
-	
-	if(!is_playing){
-		if(withReverb){
-			gainNode.gain.value = initialVol*2;
-		}else if(withDistortion){
+*/
+
+	if (!is_playing) {
+		if (withReverb) {
+			gainNode.gain.value = initialVol * 2;
+		} else if (withDistortion) {
 			gainNode.connect(distortion);
 			distortion.connect(audioCtx.destination);
-			makeDistortionCurve(distV);		
-		}else if(withModulation){
+			makeDistortionCurve(distV);
+		} else if (withModulation) {
 			modulator.connect(modulatorGain);
 			modulatorGain.connect(oscillator.frequency);
 			oscillator.connect(gainNode);
 			gainNode.connect(panNode);
 			panNode.connect(audioCtx.destination);
 			modulator.start(0);
-		}else{
+		} else {
 			gainNode.connect(panNode);
 			panNode.connect(audioCtx.destination);
 		}
-		
-		
+
+
 		initAudioEnv(skel);
 		oscillator.start(0);
 		//oscillator2.start(0);
 		is_playing = true;
 	}
-	
+
 	oscillator.frequency.value = map(skel.coordsDist[11][1], yMin, yMax, 0, maxFreq);
-	
+
 	panNode.pan.value = map(parseInt(skel.Aproj[0]), 0, 320, -1, 1);
-	
-	if(withModulation){
+
+	if (withModulation) {
 		modulator.frequency.value = map(skel.coordsDist[7][1], yMin, yMax, 0, modFreqMax);
 	}
 
 }
 
-function initAudioEnv(skel){
+function initAudioEnv(skel) {
 	yMax = parseFloat(skel.coordsDist[3][1]);
-	var kneeAvg = (parseFloat(skel.coordsDist[13][1]) + parseFloat(skel.coordsDist[17][1]))/2;
-	yMin = kneeAvg + (parseFloat(skel.coordsDist[3][1]) - kneeAvg)/9;
+	var kneeAvg = (parseFloat(skel.coordsDist[13][1]) + parseFloat(skel.coordsDist[17][1])) / 2;
+	yMin = kneeAvg + (parseFloat(skel.coordsDist[3][1]) - kneeAvg) / 9;
 }
 
-function initReverb(resp){
+function initReverb(resp) {
 	var audioData = resp.target.response;
 	audioCtx.decodeAudioData(audioData, function(buffer) {
-      reverbBuffer = buffer;
-      soundSource = audioCtx.createBufferSource();
-      soundSource.buffer = reverbBuffer;
-	reverb.buffer = reverbBuffer;
-	gainNode.connect(reverb);
-	reverb.connect(audioCtx.destination);
-    }, function(e){"Error with decoding audio data" + e.err});
+		reverbBuffer = buffer;
+		soundSource = audioCtx.createBufferSource();
+		soundSource.buffer = reverbBuffer;
+		reverb.buffer = reverbBuffer;
+		gainNode.connect(reverb);
+		reverb.connect(audioCtx.destination);
+	}, function(e) {
+		"Error with decoding audio data" + e.err
+	});
 
 }
 
 function makeDistortionCurve(amount) {
-    var k = typeof amount === 'number' ? amount : 50,
-        n_samples = 44100,
-        curve = new Float32Array(n_samples),
-        deg = Math.PI / 180,
-        i = 0,
-        x;
-    for ( ; i < n_samples; ++i ) {
-        x = i * 2 / n_samples - 1;
-        curve[i] = ( 3 + k ) * x * 20 * deg / 
-            (Math.PI + k * Math.abs(x));
-    }
-    return curve;
+	var k = typeof amount === 'number' ? amount : 50,
+		n_samples = 44100,
+		curve = new Float32Array(n_samples),
+		deg = Math.PI / 180,
+		i = 0,
+		x;
+	for (; i < n_samples; ++i) {
+		x = i * 2 / n_samples - 1;
+		curve[i] = (3 + k) * x * 20 * deg /
+			(Math.PI + k * Math.abs(x));
+	}
+	return curve;
 }
 
 
-function kill_audio(){
+function kill_audio() {
 	oscillator.stop();
 }

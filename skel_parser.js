@@ -32,19 +32,19 @@ T:4542 A:161,109,18592 0:161,85,19224 1:162,77,19592 2:163,32,19472 3:159,4,1856
 
 
 
-var last_timestamp = 0;	//global variable holding last skeleton set timestamp
-var last_A_dist;	//global variable holding last skeleton set center coords
-var last_A_proj;	//global variable holding last skeleton set screen projection center coords
+var last_timestamp = 0; //global variable holding last skeleton set timestamp
+var last_A_dist; //global variable holding last skeleton set center coords
+var last_A_proj; //global variable holding last skeleton set screen projection center coords
 var intervalID, startTime;
 
 //Skeleton object
 var Skeleton = function() {
-	this.timestamp = 0;		//we also use it as ID
-	this.Adist = 0;			//Centre Coord
-	this.Aproj = 0;			//Projected Centre Coord
-	this.coordsDist = [];	//Joint Coords
-	this.coordsProj = [];	//Projected Joint Coords
-	this.inSync = false;	//The Projected Coords are in sync
+	this.timestamp = 0; //we also use it as ID
+	this.Adist = 0; //Centre Coord
+	this.Aproj = 0; //Projected Centre Coord
+	this.coordsDist = []; //Joint Coords
+	this.coordsProj = []; //Projected Joint Coords
+	this.inSync = false; //The Projected Coords are in sync
 };
 
 //Push coords to Skeleton object
@@ -52,18 +52,18 @@ var Skeleton = function() {
 //		and we add the cue, it is lost
 Skeleton.prototype.push = function(skel_in, isProjected, A) {
 
-	if(isProjected == true){
+	if (isProjected == true) {
 		this.Aproj = A;
-		skel_in.forEach(function(item, index, array){
+		skel_in.forEach(function(item, index, array) {
 			skeleton.coordsProj[index] = item.split(':')[1].split(',');
 		});
-	}else{
+	} else {
 		this.Adist = A;
-		skel_in.forEach(function(item, index, array){
+		skel_in.forEach(function(item, index, array) {
 			skeleton.coordsDist[index] = item.split(':')[1].split(',');
 		});
 	}
-  
+
 };
 
 
@@ -73,74 +73,77 @@ var skeleton = new Skeleton();
 var skeletons = [];
 
 //Entry point - since this is a worker
-onmessage = function(e){
+onmessage = function(e) {
 	var type = e.data.type;
 	var data = e.data.data;
 
-	if(type=='coords'){
+	if (type == 'coords') {
 		parse_skeleton(data);
-	}else if(type=='start'){
+	} else if (type == 'start') {
 		intervalID = setInterval(check_qeue, 10);
 		startTime = performance.now();
 	}
 }
 
-function check_qeue(){
-	
-	var time = performance.now()-startTime;
-	
-	if((typeof skeletons[0] === 'undefined')||(skeletons.length == 1)){
+function check_qeue() {
+
+	var time = performance.now() - startTime;
+
+	if ((typeof skeletons[0] === 'undefined') || (skeletons.length == 1)) {
 		console.log('stopin');
 		send_message('now', 'stop');
 		clearInterval(intervalID);
-		return;	
+		return;
 	}
-	
-	if(time<skeletons[0].timestamp)	return;
-	
-	if(time>=skeletons[0].timestamp && time<skeletons[1].timestamp){
+
+	if (time < skeletons[0].timestamp) return;
+
+	if (time >= skeletons[0].timestamp && time < skeletons[1].timestamp) {
 		send_message(skeletons.shift());
 	}
 }
 
-function parse_skeleton(skel_set){
+function parse_skeleton(skel_set) {
 
 	var curr_skel = skel_set.split(' ');
 	var curr_time = curr_skel.shift().split(':')[1];
 	var curr_A = curr_skel.shift().split(':')[1].split(',');
 
-	if(skeleton.timestamp == curr_time){
+	if (skeleton.timestamp == curr_time) {
 		skeleton.push(curr_skel, true, curr_A);
 		skeleton.inSync = true;
-	}else{
+	} else {
 		skeleton.push(curr_skel, false, curr_A);
 		skeleton.timestamp = curr_time;
 		skeleton.inSync = false;
 	}
-	
+
 	console.log(skeleton);
-	
-	if(skeleton.inSync){
+
+	if (skeleton.inSync) {
 		//skeleton_to_cue();
 		skeletons.push(Object.assign({}, skeleton));
-		skeletons[skeletons.length-1].coordsDist = skeleton.coordsDist.slice();
-		skeletons[skeletons.length-1].coordsProj = skeleton.coordsProj.slice();
-//		skeletons[skeletons.length-1].AProj = skeleton.AProj.slice();
-//		skeletons[skeletons.length-1].ADist = skeleton.ADist.slice();
+		skeletons[skeletons.length - 1].coordsDist = skeleton.coordsDist.slice();
+		skeletons[skeletons.length - 1].coordsProj = skeleton.coordsProj.slice();
+		//		skeletons[skeletons.length-1].AProj = skeleton.AProj.slice();
+		//		skeletons[skeletons.length-1].ADist = skeleton.ADist.slice();
 	}
 }
 
-function skeleton_to_cue(){
+function skeleton_to_cue() {
 	//textTrack.addCue(new TextTrackCue(skeleton.timestamp, skeleton.timestamp+10,skeleton.timestamp));
-	tms = parseInt(skeleton.timestamp)/1000;	//cues are in sec
-	textTrack.addCue(new VTTCue(tms, tms+0.010, skeleton.timestamp));
+	tms = parseInt(skeleton.timestamp) / 1000; //cues are in sec
+	textTrack.addCue(new VTTCue(tms, tms + 0.010, skeleton.timestamp));
 }
 
-function send_message(msg, _type){
-	if (typeof _type === 'undefined'){
+function send_message(msg, _type) {
+	if (typeof _type === 'undefined') {
 		postMessage(msg);
-	}else{
-		postMessage({type:_type, data:msg});
+	} else {
+		postMessage({
+			type: _type,
+			data: msg
+		});
 	}
 
 }
