@@ -5,7 +5,6 @@ var audioCtx = new(window.AudioContext || window.webkitAudioContext)();
 var oscillator = audioCtx.createOscillator();
 var gainNode = audioCtx.createGain();
 var reverb = audioCtx.createConvolver();
-var distortion = audioCtx.createWaveShaper();
 var modulator = audioCtx.createOscillator(); //Modulator
 var modulatorGain = audioCtx.createGain();
 
@@ -60,22 +59,9 @@ function do_the_audio(e) {
 
 	var skel = e;
 
-	/*	
-		this.timestamp = 0;		//we also use it as ID
-	this.Adist = 0;			//Centre Coord
-	this.Aproj = 0;			//Projected Centre Coord
-	this.coordsDist = [];	//Joint Coords
-	this.coordsProj = [];	//Projected Joint Coords
-	this.inSync = false;	//The Projected Coords are in sync
-*/
-
 	if (!is_playing) {
 		if (withReverb) {
 			gainNode.gain.value = initialVol * 2;
-		} else if (withDistortion) {
-			gainNode.connect(distortion);
-			distortion.connect(audioCtx.destination);
-			makeDistortionCurve(distV);
 		} else if (withModulation) {
 			modulator.connect(modulatorGain);
 			modulatorGain.connect(oscillator.frequency);
@@ -125,22 +111,6 @@ function initReverb(resp) {
 	});
 
 }
-
-function makeDistortionCurve(amount) {
-	var k = typeof amount === 'number' ? amount : 50,
-		n_samples = 44100,
-		curve = new Float32Array(n_samples),
-		deg = Math.PI / 180,
-		i = 0,
-		x;
-	for (; i < n_samples; ++i) {
-		x = i * 2 / n_samples - 1;
-		curve[i] = (3 + k) * x * 20 * deg /
-			(Math.PI + k * Math.abs(x));
-	}
-	return curve;
-}
-
 
 function kill_audio() {
 	oscillator.stop();
