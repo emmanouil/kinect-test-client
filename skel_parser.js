@@ -53,14 +53,22 @@ var Skeleton = function() {
 Skeleton.prototype.push = function(skel_in, isProjected, A) {
 
 	if (isProjected == true) {
-		this.Aproj = A;
+		this.Aproj = A.map(function(elem){
+			return(parseInt(elem));
+		});
 		skel_in.forEach(function(item, index, array) {
-			skeleton.coordsProj[index] = item.split(':')[1].split(',');
+			skeleton.coordsProj[index] = item.split(':')[1].split(',').map(function(elem){
+			return(parseInt(elem));
+		});
 		});
 	} else {
-		this.Adist = A;
+		this.Adist = A.map(function(elem){
+			return(parseFloat(elem));
+		});
 		skel_in.forEach(function(item, index, array) {
-			skeleton.coordsDist[index] = item.split(':')[1].split(',');
+			skeleton.coordsDist[index] = item.split(':')[1].split(',').map(function(elem){
+			return(parseFloat(elem));
+		});
 		});
 	}
 
@@ -106,7 +114,7 @@ function check_qeue() {
 function parse_skeleton(skel_set) {
 
 	var curr_skel = skel_set.split(' ');
-	var curr_time = curr_skel.shift().split(':')[1];
+	var curr_time = parseInt(curr_skel.shift().split(':')[1]);
 	var curr_A = curr_skel.shift().split(':')[1].split(',');
 
 	if (skeleton.timestamp == curr_time) {

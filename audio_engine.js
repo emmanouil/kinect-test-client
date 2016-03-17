@@ -83,7 +83,7 @@ function do_the_audio(e) {
 
 	oscillator.frequency.value = map(skel.coordsDist[11][1], yMin, yMax, 0, maxFreq);
 
-	panNode.pan.value = map(parseInt(skel.Aproj[0]), 0, 320, -1, 1);
+	panNode.pan.value = map(skel.Aproj[0], 0, 320, -1, 1);
 
 	if (withModulation) {
 		modulator.frequency.value = map(skel.coordsDist[7][1], yMin, yMax, 0, modFreqMax);
@@ -92,9 +92,9 @@ function do_the_audio(e) {
 }
 
 function initAudioEnv(skel) {
-	yMax = parseFloat(skel.coordsDist[3][1]);
-	var kneeAvg = (parseFloat(skel.coordsDist[13][1]) + parseFloat(skel.coordsDist[17][1])) / 2;
-	yMin = kneeAvg + (parseFloat(skel.coordsDist[3][1]) - kneeAvg) / 9;
+	yMax = skel.coordsDist[3][1];
+	var kneeAvg = (skel.coordsDist[13][1] + skel.coordsDist[17][1]) / 2;
+	yMin = kneeAvg + (skel.coordsDist[3][1] - kneeAvg) / 9;
 }
 
 function initReverb(resp) {

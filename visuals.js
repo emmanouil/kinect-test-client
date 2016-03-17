@@ -32,7 +32,7 @@ function drawViz(e) {
 		var gradient = canvasCtx.createLinearGradient(0, 0, canvas.width, 0);
 
 		gradient.addColorStop(0, "black");
-		gradient.addColorStop(map(parseInt(projC[0]), 0, 320, 0, 1), "blue");
+		gradient.addColorStop(map(projC[0][0], 0, 320, 0, 1), "blue");
 
 		gradient.addColorStop(1, "white");
 		canvasCtx.fillStyle = gradient;
@@ -67,7 +67,7 @@ function drawViz(e) {
 	projC.forEach(function(item, index, array) {
 		canvasCtx.beginPath();
 		canvasCtx.fillStyle = 'rgb(255,0,0)';
-		canvasCtx.arc(2 * parseInt(item[0]), 2 * parseInt(item[1]), 5, (Math.PI / 180) * 0, (Math.PI / 180) * 360, false);
+		canvasCtx.arc(2 * item[0], 2 * item[1], 5, (Math.PI / 180) * 0, (Math.PI / 180) * 360, false);
 		canvasCtx.fill();
 		canvasCtx.closePath();
 	});
@@ -79,9 +79,9 @@ function drawViz(e) {
 }
 
 function initVizEnv(skel) {
-	var head = parseInt(skel[3][1]);
+	var head = skel[3][1];
 	yLineMax = head > 0 ? 2 * head : 0;
-	var kneeAvg = (parseInt(skel[13][1]) + parseInt(skel[17][1])) / 2;
+	var kneeAvg = (skel[13][1] + skel[17][1]) / 2;
 	yLineMin = 2 * Math.round(kneeAvg - (yLineMax + kneeAvg) / 9);
 
 }
@@ -92,10 +92,10 @@ function do_viz(projC) {
 	projC.forEach(function(item, index, array) {
 		if (index == 7) {
 			colour = 'rgba(255,0,0,1)';
-			system.addParticle(2 * parseInt(item[0]), 2 * parseInt(item[1]), index);
+			system.addParticle(2 * item[0], 2 * item[1], index);
 		} else if (index == 11) {
 			colour = 'rgba(0,255,0,1)';
-			system.addParticle(2 * parseInt(item[0]), 2 * parseInt(item[1]), index);
+			system.addParticle(2 * item[0], 2 * item[1], index);
 		} else {
 			return;
 		}
@@ -104,7 +104,7 @@ function do_viz(projC) {
 
 		canvasCtx.beginPath();
 		canvasCtx.fillStyle = 'rgb(255,255,255)';
-		canvasCtx.arc(2 * parseInt(item[0]), 2 * parseInt(item[1]), 10, (Math.PI / 180) * 0, (Math.PI / 180) * 360, false);
+		canvasCtx.arc(2 * item[0], 2 * item[1], 10, (Math.PI / 180) * 0, (Math.PI / 180) * 360, false);
 		canvasCtx.fill();
 		canvasCtx.closePath();
 
